@@ -5,17 +5,34 @@
  */
 package demo;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author anshul
  */
 public class Acknowlegement extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Acknowlegement
-     */
+
     public Acknowlegement() {
         initComponents();
+    }
+    
+    public Acknowlegement(String totalpoint,String transaction_amount,String userid)
+    {
+        initComponents();
+        String points_used = find_points_used(totalpoint,transaction_amount,userid);
+        String points_granted = points_granted(transaction_amount);
+        String points_remaining = points_remaining(points_granted,points_used,totalpoint);
+        //set all points to text field
+        Usedpoints.setText(points_used);
+        cashback.setText(points_granted);
+        PointsRemain.setText(points_remaining);
     }
 
     /**
@@ -29,21 +46,19 @@ public class Acknowlegement extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        PointsRemain = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         Backhome = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        cashback = new javax.swing.JLabel();
+        PointsRemain = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        Usedpoints = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Acknowledgment");
 
         jLabel2.setText("Points Remaining");
-
-        PointsRemain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PointsRemainActionPerformed(evt);
-            }
-        });
 
         jLabel3.setText("THANK       YOU");
 
@@ -54,6 +69,12 @@ public class Acknowlegement extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Cashback on this Transaction");
+
+        jLabel5.setText("Points Used");
+
+        Usedpoints.setText("jLabel6");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -61,34 +82,53 @@ public class Acknowlegement extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(165, 165, 165)
-                        .addComponent(PointsRemain, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(11, 11, 11)
-                                .addComponent(jLabel3))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(133, 133, 133)
-                        .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(jLabel3))
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(69, 69, 69)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Usedpoints, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(PointsRemain, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
+                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Usedpoints, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PointsRemain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(PointsRemain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
                 .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(42, Short.MAX_VALUE))
         );
@@ -96,10 +136,51 @@ public class Acknowlegement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void PointsRemainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PointsRemainActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PointsRemainActionPerformed
-
+    private String find_points_used(String totalpoint,String tran_amt,String userid)
+    {
+        int itran_amt= Integer.parseInt(tran_amt);
+        int itotalpoint= Integer.parseInt(totalpoint);
+        if(itran_amt>=itotalpoint)
+        {
+            try {
+                Connection c = DBClass.getConnection();
+                final PreparedStatement ps = c.prepareStatement("SELECT * from Points_granted WHERE Userid = ?");
+                ps.setString(1, userid);
+                ps.executeUpdate();
+            } catch (Exception ex) {
+                Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
+            }       
+ 
+        } 
+        
+        
+        if(itran_amt<itotalpoint)
+        {
+            //delete points which are older
+            
+            return tran_amt;
+        }        
+        return null;        
+    }
+    
+    private String points_granted(String tran_amt)
+    {
+        //retrive data from config table
+        //use it to calculate cashback
+        //insert it to points granted table
+        return null;        
+    }
+    private String points_remaining(String points_granted,String point_used,String totalpoint)
+    {
+        int ipoints_gran=Integer.parseInt(points_granted);
+        int ipoint_used=Integer.parseInt(point_used);
+        int itotalpoint=Integer.parseInt(totalpoint);
+        int ipoints_remaining;
+        ipoints_remaining = itotalpoint-ipoint_used+ipoints_gran;
+        String points_remaining=String.valueOf(ipoints_remaining);
+        return points_remaining;        
+    }
+    
     private void BackhomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackhomeActionPerformed
         DemoStart ds = new DemoStart();
         ds.setVisible(true);
@@ -143,9 +224,13 @@ public class Acknowlegement extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Backhome;
-    private javax.swing.JTextField PointsRemain;
+    private javax.swing.JLabel PointsRemain;
+    private javax.swing.JLabel Usedpoints;
+    private javax.swing.JLabel cashback;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
 }
