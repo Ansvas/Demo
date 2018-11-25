@@ -58,7 +58,7 @@ public class Settings extends javax.swing.JFrame {
 
         jLabel3.setText("Cashback (%)");
 
-        jLabel4.setText("Validation(in days)");
+        jLabel4.setText("Validation(in month)");
 
         Submitoffer.setText("Submit");
         Submitoffer.addActionListener(new java.awt.event.ActionListener() {

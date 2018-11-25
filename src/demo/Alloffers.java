@@ -11,9 +11,7 @@ package demo;
  */
 public class Alloffers extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Alloffers
-     */
+    
     public Alloffers() {
         initComponents();
     }

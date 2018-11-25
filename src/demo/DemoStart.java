@@ -163,17 +163,34 @@ public class DemoStart extends javax.swing.JFrame {
                 dispose();
             }
             else
-            {                
+            { 
+                // set data into users table
                 String query = "insert into User values (NULL,'"+user+"','"+email1+"','"+mobno1+"')";
-                System.out.println(query);
                 try {
                     Connection c = DBClass.getConnection();
                     Statement stmt = c.createStatement();
                     stmt.executeUpdate(query);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+               //initilisation into points table 
+                
+                String userid=Transaction.findinguserid(mobno1);
+                String zero="0";
+                String one="1";
+                
+                String query1 = "insert into Points_granted values (NULL,'"+zero+"',now(),'"+userid+"','"+one+"','"+zero+"')";
+                System.out.println(query);
+                try {
+                    Connection c = DBClass.getConnection();
+                    Statement stmt = c.createStatement();
+                    stmt.executeUpdate(query1);
                     JOptionPane.showMessageDialog(this, "Saved");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                
+                // move to next jrame
                 
                 Transaction tf2 =new Transaction(mobno1);
                 tf2.setVisible(true);

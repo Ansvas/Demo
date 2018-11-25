@@ -5,12 +5,14 @@
  */
 package demo;
 
+import static demo.DemoStart.mobno1;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,16 +25,15 @@ public class Acknowlegement extends javax.swing.JFrame {
         initComponents();
     }
     
-    public Acknowlegement(String totalpoint,String transaction_amount,String userid)
+    public Acknowlegement(String points_used,String points_granted,String points_remaining,String payble)
     {
         initComponents();
-        String points_used = find_points_used(totalpoint,transaction_amount,userid);
-        String points_granted = points_granted(transaction_amount);
-        String points_remaining = points_remaining(points_granted,points_used,totalpoint);
         //set all points to text field
+        System.out.println(points_granted);
         Usedpoints.setText(points_used);
         cashback.setText(points_granted);
         PointsRemain.setText(points_remaining);
+        payble_amt.setText(payble);
     }
 
     /**
@@ -53,6 +54,8 @@ public class Acknowlegement extends javax.swing.JFrame {
         PointsRemain = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         Usedpoints = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        payble_amt = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,36 +78,41 @@ public class Acknowlegement extends javax.swing.JFrame {
 
         Usedpoints.setText("jLabel6");
 
+        jLabel6.setText("Payable amount");
+
+        payble_amt.setText("jLabel7");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(129, 129, 129))
             .addGroup(layout.createSequentialGroup()
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(133, 133, 133)
-                        .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jLabel3))
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(69, 69, 69)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Usedpoints, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(PointsRemain, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel3))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Usedpoints, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PointsRemain, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(payble_amt, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,49 +136,146 @@ public class Acknowlegement extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(PointsRemain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addGap(24, 24, 24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(payble_amt, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                        .addGap(5, 5, 5)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(Backhome, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private String find_points_used(String totalpoint,String tran_amt,String userid)
+    public static String find_points_used(String totalpoint,String tran_amt,String userid)
     {
         int itran_amt= Integer.parseInt(tran_amt);
         int itotalpoint= Integer.parseInt(totalpoint);
+        //if transaction amount is more than points
         if(itran_amt>=itotalpoint)
         {
             try {
                 Connection c = DBClass.getConnection();
-                final PreparedStatement ps = c.prepareStatement("SELECT * from Points_granted WHERE Userid = ?");
-                ps.setString(1, userid);
+                final PreparedStatement ps = c.prepareStatement("UPDATE Points_granted SET flag=? WHERE Userid = ?");
+                ps.setString(1, "0");
+                ps.setString(2, userid);
                 ps.executeUpdate();
             } catch (Exception ex) {
                 Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
-            }       
- 
-        } 
+            } 
+         return totalpoint;
+        }         
         
-        
+        //if transaction amount is less than points
         if(itran_amt<itotalpoint)
         {
-            //delete points which are older
-            
-            return tran_amt;
+            try {
+                //delete points which are older
+                //retrive data
+                Connection c = DBClass.getConnection();                
+                final PreparedStatement ps = c.prepareStatement("SELECT * Points_granted WHERE Userid =? and flag=? ORDER BY Date ASC");
+                ps.setString(1, userid);
+                ps.setString(2, "1");
+                final ResultSet resultSet = ps.executeQuery();
+                while(resultSet.next())
+                {
+                    String Serialno=resultSet.getString("SerialNo");
+                    if(itotalpoint>0)
+                    {
+                        String points=resultSet.getString("Points_remain");
+                        int ipoints=Integer.parseInt(points);
+                        if(itotalpoint>=ipoints)
+                        {
+                            itotalpoint=itotalpoint-ipoints;
+                            ipoints=0;
+                            String points1=String.valueOf(ipoints);
+                            String flag="0";
+                            setflag(points1,flag,Serialno);
+                            
+                        //set flag to 0
+                        }
+                        if(itotalpoint<ipoints)
+                        {
+                            itotalpoint=0;
+                            ipoints=ipoints-itotalpoint;
+                            String points1=String.valueOf(ipoints);
+                            String flag="1";
+                        //set totalpoint to ipoints-itotalpoint
+                            setflag(points1,flag,Serialno);
+                        }
+                    }
+                }    
+              
+                return tran_amt;
+            } catch (Exception ex) {
+                Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }        
-        return null;        
+        return null;       
     }
     
-    private String points_granted(String tran_amt)
+    private static void setflag(String points,String flag,String Serialno)
+    {
+        try {
+                Connection c = DBClass.getConnection();
+                final PreparedStatement ps = c.prepareStatement("UPDATE Points_granted SET flag=?,Points_remain=? WHERE SerialNo = ?");
+                ps.setString(1, flag);
+                ps.setString(2, points);
+                ps.setString(3,Serialno);
+                ps.executeUpdate();
+            } catch (Exception ex) {
+                Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+    }
+    
+    public static String points_granted(String tran_amnt,String userid)
     {
         //retrive data from config table
+        System.out.println("i m in points granted");
+        try {
+            Connection c = DBClass.getConnection();
+            
+            final PreparedStatement ps = c.prepareStatement("SELECT * from config");
+            final ResultSet resultSet = ps.executeQuery();
+            
+            while(resultSet.next())
+            {
+            String ll = resultSet.getString("lower_limit");
+            String ul = resultSet.getString("upperlimit");
+            String cashback_per =resultSet.getString("Cashback_per");
+            int ill=Integer.parseInt(ll);
+            int iul=Integer.parseInt(ul);
+            int icashback_per = Integer.parseInt(cashback_per);
+            int itran_amt=Integer.parseInt(tran_amnt);
+            int icashback;
+            if(ill<=itran_amt&&itran_amt<iul)
+            {
+                icashback=(itran_amt*icashback_per)/100;
+                System.out.println(icashback);
+                String cashback1=String.valueOf(icashback);
+                //set data into points_granted table
+                String one="1";
+                String query1 = "insert into Points_granted values (NULL,'"+cashback1+"',now(),'"+userid+"','"+one+"','"+cashback1+"')";
+                Connection con = DBClass.getConnection();
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(query1);
+                return cashback1;                
+            }
+            }
+         //   c.close();
+                  
+        } catch (Exception ex) {
+            Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
         //use it to calculate cashback
-        //insert it to points granted table
-        return null;        
+        //insert it to points granted table              
     }
-    private String points_remaining(String points_granted,String point_used,String totalpoint)
+    
+    public static String points_remaining(String points_granted,String point_used,String totalpoint)
     {
         int ipoints_gran=Integer.parseInt(points_granted);
         int ipoint_used=Integer.parseInt(point_used);
@@ -232,5 +337,7 @@ public class Acknowlegement extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel payble_amt;
     // End of variables declaration//GEN-END:variables
 }

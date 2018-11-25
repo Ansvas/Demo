@@ -130,7 +130,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Validation(in days)"/>
+        <Property name="text" type="java.lang.String" value="Validation(in month)"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="validity">
