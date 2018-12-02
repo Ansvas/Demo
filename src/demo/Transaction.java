@@ -159,41 +159,42 @@ public class Transaction extends javax.swing.JFrame {
     
     private String find_active_point(String userid)
     {
-        //set flag of all inactive point to zero
+                //set flag to zero for all inactive points
+                try {
+                    Connection c = DBClass.getConnection();
+                    final PreparedStatement ps = c.prepareStatement("UPDATE Points_granted SET flag=? WHERE Date < now()-interval ? month");
+                    ps.setString(1, "0");
+                    ps.setString(2, validity);
+                    ps.executeUpdate();
+                } catch (Exception ex) {
+                    Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+            //retrive sum of relivent points
+
+                try {
+
+                    Connection c = DBClass.getConnection();
+                    
+                    final PreparedStatement ps = c.prepareStatement("SELECT sum(Points_remain) FROM Points_granted WHERE Userid =? and flag=? and Date >= now()-interval ? month ORDER BY Date ASC");
+                    ps.setString(1, userid);
+                    ps.setString(2, "1");
+                    ps.setString(3, validity);
+                    final ResultSet resultSet = ps.executeQuery();
+                    resultSet.next();
+                    String value = resultSet.getString(1);
+                    //c.close();
+                    return value;
+                    
+                    
+                    
+                } catch (Exception ex) {
+                    Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return null;
         
-    /*    try {
-                Connection c = DBClass.getConnection();
-                final PreparedStatement ps = c.prepareStatement("UPDATE Points_granted SET flag=? WHERE WHERE Date < now()-interval ? month");
-                ps.setString(1, "0");
-                ps.setString(2, validity);
-                ps.executeUpdate();
-            } catch (Exception ex) {
-                Logger.getLogger(Acknowlegement.class.getName()).log(Level.SEVERE, null, ex);
-            } */
-        
-    try {
-        //retrive sum of relivent points
-        
-        Connection c = DBClass.getConnection();
-        
-        final PreparedStatement ps = c.prepareStatement("SELECT sum(Points_remain) FROM Points_granted WHERE Userid =? and flag=? and Date >= now()-interval ? month ORDER BY Date ASC");
-        ps.setString(1, userid);
-        ps.setString(2, "1");
-        ps.setString(3, validity);
-        final ResultSet resultSet = ps.executeQuery();
-        resultSet.next();
-        String value = resultSet.getString(1);
-        //c.close();
-        return value;
-                                      
-                                
-                                
-    } catch (Exception ex) {
-        Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    return null;
-        
-    }
+    }   
+    
      
     public static String findinguserid(String mobno)
     {
