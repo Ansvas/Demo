@@ -129,9 +129,9 @@ public class Acknowlegement extends javax.swing.JFrame {
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Usedpoints, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cashback, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(PointsRemain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -175,20 +175,22 @@ public class Acknowlegement extends javax.swing.JFrame {
             try {
                 //delete points which are older
                 //retrive data
+                String temp="1";
                 Connection c = DBClass.getConnection();                
-                final PreparedStatement ps = c.prepareStatement("SELECT * Points_granted WHERE Userid =? and flag=? ORDER BY Date ASC");
+                final PreparedStatement ps = c.prepareStatement("SELECT * from Points_granted WHERE Userid =? and flag=? ORDER BY Date ASC");
                 ps.setString(1, userid);
-                ps.setString(2, "1");
+                ps.setString(2, temp);
                 final ResultSet resultSet = ps.executeQuery();
                 while(resultSet.next())
                 {
                     String Serialno=resultSet.getString("SerialNo");
-                    if(itotalpoint>0)
+                    if(itran_amt>0)
                     {
                         String points=resultSet.getString("Points_remain");
                         int ipoints=Integer.parseInt(points);
-                        if(itotalpoint>=ipoints)
+                        if(itran_amt>=ipoints)
                         {
+                            
                             itotalpoint=itotalpoint-ipoints;
                             ipoints=0;
                             String points1=String.valueOf(ipoints);
@@ -197,14 +199,17 @@ public class Acknowlegement extends javax.swing.JFrame {
                             
                         //set flag to 0
                         }
-                        if(itotalpoint<ipoints)
+                        if(itran_amt<ipoints)
                         {
-                            itotalpoint=0;
-                            ipoints=ipoints-itotalpoint;
+                            System.out.println("settubg flag to 1");
+                            ipoints=ipoints-itran_amt;
+                            itran_amt=0;
                             String points1=String.valueOf(ipoints);
+                            System.out.println("remaining points are"+ points1);
                             String flag="1";
                         //set totalpoint to ipoints-itotalpoint
                             setflag(points1,flag,Serialno);
+                            break;
                         }
                     }
                 }    
@@ -277,6 +282,7 @@ public class Acknowlegement extends javax.swing.JFrame {
     
     public static String points_remaining(String points_granted,String point_used,String totalpoint)
     {
+        System.out.println("points granted are" +points_granted);
         int ipoints_gran=Integer.parseInt(points_granted);
         int ipoint_used=Integer.parseInt(point_used);
         int itotalpoint=Integer.parseInt(totalpoint);

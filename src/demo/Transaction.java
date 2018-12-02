@@ -176,7 +176,7 @@ public class Transaction extends javax.swing.JFrame {
         
         Connection c = DBClass.getConnection();
         
-        final PreparedStatement ps = c.prepareStatement("SELECT sum(points) FROM Points_granted WHERE Userid =? and flag=? and Date >= now()-interval ? month ORDER BY Date ASC");
+        final PreparedStatement ps = c.prepareStatement("SELECT sum(Points_remain) FROM Points_granted WHERE Userid =? and flag=? and Date >= now()-interval ? month ORDER BY Date ASC");
         ps.setString(1, userid);
         ps.setString(2, "1");
         ps.setString(3, validity);
@@ -232,6 +232,8 @@ public class Transaction extends javax.swing.JFrame {
         
         String points_used = Acknowlegement.find_points_used(totalpoint,transaction_amount,userid);
         System.out.println("points used are"+points_used);
+        
+        // considering that we are not giving cashback if user click on redeem points
         String points_granted = "0";
         String points_remaining =Acknowlegement.points_remaining(points_granted,points_used,totalpoint);
         int ipoints_used=Integer.parseInt(points_used);
@@ -250,9 +252,11 @@ public class Transaction extends javax.swing.JFrame {
     
      String trans_amt=amount_field.getText();
       System.out.println(trans_amt);
+      String points_used="0";
     String points_granted = Acknowlegement.points_granted(trans_amt,userid);
-    Acknowlegement tf2 =new Acknowlegement("0",points_granted,totalpoint,trans_amt);
-    System.out.println(points_granted);
+    String points_remaining = Acknowlegement.points_remaining(points_granted,points_used,totalpoint);
+    Acknowlegement tf2 =new Acknowlegement(points_used,points_granted,points_remaining,trans_amt);
+    System.out.println("points ganted in transaction"+points_granted);
     
          tf2.setVisible(true);
          dispose();
@@ -264,7 +268,7 @@ public class Transaction extends javax.swing.JFrame {
          tf2.setVisible(true);
          dispose();
     }//GEN-LAST:event_BackActionPerformed
-
+ 
     /**
      * @param args the command line arguments
      */
